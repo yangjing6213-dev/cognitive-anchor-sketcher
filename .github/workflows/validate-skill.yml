@@ -1,0 +1,55 @@
+name: Validate Skill
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Validate skill contract
+        shell: bash
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+
+          root = Path("cognitive-anchor-sketcher")
+          skill = root / "SKILL.md"
+          agent = root / "agents" / "openai.yaml"
+
+          for path in (skill, agent):
+              if not path.is_file() or not path.read_text(encoding="utf-8").strip():
+                  raise SystemExit(f"Missing or empty required file: {path}")
+
+          skill_text = skill.read_text(encoding="utf-8")
+          front_matter = skill_text.split("---", 2)
+          if len(front_matter) < 3 or "name: cognitive-anchor-sketcher" not in front_matter[1]:
+              raise SystemExit("SKILL.md front matter is invalid")
+
+          agent_text = agent.read_text(encoding="utf-8")
+          if "interface:" not in agent_text or "policy:" not in agent_text:
+              raise SystemExit("agents/openai.yaml is missing required sections")
+
+          references = sorted(set(re.findall(r"references/[A-Za-z0-9_.-]+[.]md", skill_text)))
+          if not references:
+              raise SystemExit("SKILL.md declares no reference files")
+
+          missing = [path for path in references if not (root / path).is_file()]
+          if missing:
+              raise SystemExit("Missing reference files: " + ", ".join(missing))
+
+          for path in references:
+              (root / path).read_text(encoding="utf-8")
+
+          print(f"Validated Skill and {len(references)} references.")
+          PY
