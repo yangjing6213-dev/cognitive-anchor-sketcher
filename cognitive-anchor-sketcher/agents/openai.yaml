@@ -1,0 +1,6 @@
+interface:
+  display_name: "小黑多风格 IP 配图"
+  short_description: "通过确认式 QA 为中文文章生成多风格 IP 正文配图"
+  default_prompt: "Use $cognitive-anchor-sketcher to 先确认文章方向、画风、IP 与 shot list，再为这篇中文文章生成正文配图。"
+policy:
+  allow_implicit_invocation: true

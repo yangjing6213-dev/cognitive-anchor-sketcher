@@ -1,0 +1,27 @@
+.DS_Store
+Thumbs.db
+
+# Local generated outputs
+generated/
+outputs/
+dist/
+
+# Local editor files
+.idea/
+.vscode/
+
+# Logs
+*.log
+
+# Local audit and historical/generated material
+.local-audit/
+.playwright-mcp/
+/articles/
+/assets/
+/examples/
+/sources/
+/tmp/
+/docs/superpowers/
+/25
+/cognitive-anchor-sketcher/assets/
+/cognitive-anchor-sketcher/ip-profiles/
