@@ -13,6 +13,8 @@ dist/
 
 # Logs
 *.log
+__pycache__/
+*.py[cod]
 
 # Local audit and historical/generated material
 .local-audit/
