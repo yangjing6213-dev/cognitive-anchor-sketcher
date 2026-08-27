@@ -21,6 +21,7 @@ description: 用于用户要求为中文文章、帖子、博客、Notion 文档
 - `references/xiaohei-ip.md`：小黑 IP 的形象、性格、动作库和禁忌。
 - `references/composition-patterns.md`：结构类型、原创隐喻方法和反复刻规则。
 - `references/prompt-template.md`：单张生图提示词模板。
+- `references/codex-cli-generation.md`：唯一允许的 Codex CLI 生图后端、直接调用/单次桥接、ChatGPT 登录预检、子进程环境隔离、输出路径和硬停止规则；任何实际生成或改图前必读。
 - `references/qa-dialogue-workflow.md`：用户确认式 QA 的阶段、选项、自定义 IP 分支与回退规则；任何生成、改图或自定义 IP 请求先读。
 - `references/qa-checklist.md`：生成后检查和迭代规则。
 - 示例素材不是运行依赖；若发行包未包含可选示例，不要假设本地存在 `assets/examples/`。不要照抄历史案例的构图、物件或标注。
@@ -38,7 +39,7 @@ description: 用于用户要求为中文文章、帖子、博客、Notion 文档
 
 ## 生成前 QA 门禁
 
-用户请求“生成 / 输出 / 做图 / 改图”时，不直接调用 `image_gen`。先读取 `references/qa-dialogue-workflow.md`，按其中状态机确认文章转化方向、画风、IP、shot list、输出规格和生成模式；只有状态为 `GENERATION_READY` 才能生成。
+用户请求“生成 / 输出 / 做图 / 改图”时，不直接调用生图工具。先读取 `references/qa-dialogue-workflow.md`，按其中状态机确认文章转化方向、画风、IP、shot list、输出规格和生成模式；只有状态为 `GENERATION_READY` 才能生成。
 
 - 每个待确认步骤只问一个问题，提供 3–5 个选项；推荐项也必须由用户明确选择或确认。
 - 用户原始请求中已经明确的值可以作为该阶段的当前选项，但仍要进入该阶段，展示 3–5 个选项并让用户确认或改选；不要把默认值、沉默或推断当成确认。
@@ -78,7 +79,9 @@ description: 用于用户要求为中文文章、帖子、博客、Notion 文档
 
 ### 4. 单张生成
 
-只有 `GENERATION_READY` 时，用内置 `image_gen` 每张单独生成。不要把多张图拼在一张里。用户要求“直接生成”也不能越过 QA 门禁；用户选择“先生成第一张试稿”时，只生成已确认的第一张。
+只有 `GENERATION_READY` 时，才读取并严格执行 `references/codex-cli-generation.md`。唯一生图后端是已通过 ChatGPT 登录的 Codex CLI 会话所暴露的内置图片生成工具；当前 CLI 会话有该工具时直接调用，明确处于非 CLI 宿主时才允许按该文件预检并桥接一次。不得请求、读取、打印或使用 API 密钥，不得调用 Images API、`image_gen.py`、SDK、其他提供商，也不得递归启动 Codex。任一前置条件或生成结果失败都必须硬停止，不自动重试或回退。
+
+每张图单独生成，不要把多张图拼在一张里。用户要求“直接生成”也不能越过 QA 门禁；用户选择“先生成第一张试稿”时，只生成已确认的第一张。
 
 每张图只讲一个核心结构。提示词必须包含：
 
@@ -106,7 +109,7 @@ description: 用于用户要求为中文文章、帖子、博客、Notion 文档
 
 ### 6. 保存交付
 
-如果用户在 workspace 内工作，把最终图复制到：
+以内置工具返回的原始输出路径为唯一文件来源；路径缺失或文件不存在时按 `references/codex-cli-generation.md` 硬停止，不扫描目录猜测结果。保留所有原始生成文件。用户验收接受后，如果用户在 workspace 内工作，把副本复制到：
 
 ```text
 assets/<article-slug>-illustrations/
@@ -119,7 +122,7 @@ assets/<article-slug>-illustrations/
 02-topic-name.png
 ```
 
-保留原始生成文件，不要覆盖已有资产，除非用户明确要求替换。
+不要移动、修改或删除原始生成文件，也不要覆盖已有资产；目标名冲突时使用新的版本名。
 
 ## 输出口径
 

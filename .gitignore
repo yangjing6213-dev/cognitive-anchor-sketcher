@@ -5,6 +5,7 @@ Thumbs.db
 generated/
 outputs/
 dist/
+/.codex/generated_images/
 
 # Local editor files
 .idea/
@@ -15,6 +16,8 @@ dist/
 
 # Local audit and historical/generated material
 .local-audit/
+/PRE-PUBLISH-REPORT.md
+/POST-PUBLISH-REPORT.md
 .playwright-mcp/
 /articles/
 /assets/

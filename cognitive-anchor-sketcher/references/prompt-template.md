@@ -21,6 +21,8 @@
 - 已确认的当前图片核心认知与 shot list 位置
 - 已确认的 16:9 输出规格与生成模式
 
+本模板只定义单张图片内容，不决定后端。实际调用必须读取并遵守 `codex-cli-generation.md`：只使用已通过 ChatGPT 登录的 Codex CLI 会话内置图片生成工具；不得使用 API 密钥、Images API、`image_gen.py`、SDK 或其他提供商，也不得自动重试。
+
 ```text
 Generate one standalone 16:9 horizontal Chinese article illustration.
 Canvas: 16:9 horizontal, 纯白背景.

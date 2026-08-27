@@ -34,7 +34,7 @@ INTAKE
   → DELIVERED | CANCELLED
 ```
 
-`DIRECTION_PENDING`、`STYLE_PENDING`、`IP_PENDING`、`SHOT_LIST_PENDING`、`OUTPUT_SPEC_PENDING` 和 `GENERATION_CONFIRM_PENDING` 是生图前必经门。只有状态为 `GENERATION_READY` 时才可调用 `image_gen`。
+`DIRECTION_PENDING`、`STYLE_PENDING`、`IP_PENDING`、`SHOT_LIST_PENDING`、`OUTPUT_SPEC_PENDING` 和 `GENERATION_CONFIRM_PENDING` 是生图前必经门。只有状态为 `GENERATION_READY` 时才可按 `codex-cli-generation.md` 调用 Codex CLI 会话内置的图片生成工具。
 
 ## 会话记录
 
@@ -51,7 +51,10 @@ authorization_status:
 shot_list:
 output_spec:
 generation_mode:
+generation_backend: codex_cli_chatgpt
 ```
+
+`generation_backend` 固定为 `codex_cli_chatgpt`；不得记录或切换到其他 provider。
 
 ## 阶段与选项
 
@@ -160,6 +163,8 @@ generation_mode:
 
 选项 1 或 2 才将状态设为 `GENERATION_READY`。
 
+`GENERATION_READY` 只表示内容与授权门禁完成，不代表生图后端已经可用。进入 `GENERATE` 前必须读取 `codex-cli-generation.md`：当前 Codex CLI 会话有内置图片生成工具时直接调用；明确的非 CLI 宿主只能在版本和 ChatGPT 登录预检通过后桥接一次。CLI、认证、工具、调用或输出文件任一失败都硬停止；只有工具成功返回且文件存在时才进入 `INTERNAL_QA`。
+
 ### `USER_REVIEW`：生成后的用户验收
 
 先按 `qa-checklist.md` 完成内部视觉 QA，再附上结果和图片预览，询问：
@@ -170,7 +175,7 @@ generation_mode:
 4. 返回修改画风或 IP；先选择回到画风阶段还是 IP 阶段，再重新展示对应的 3–5 个选项
 5. 保留当前版本并结束
 
-选项 2 或 3 只针对指定图片；保留其余已确认选择。先回显该图的变更、输出规格和保存路径，再回到 `GENERATION_CONFIRM_PENDING` 给出最终确认菜单。只有用户再次确认生成后，才设为 `GENERATION_READY` 并调用生图工具。
+选项 2 或 3 只针对指定图片；保留其余已确认选择。先回显该图的变更、输出规格和保存路径，再回到 `GENERATION_CONFIRM_PENDING` 给出最终确认菜单。只有用户再次确认生成后，才设为 `GENERATION_READY` 并按 `codex-cli-generation.md` 调用生图工具。
 
 未得到用户对重生成或编辑的明确选择时，不要静默重复调用生图工具。
 
@@ -185,4 +190,4 @@ generation_mode:
 | 图片数量或输出规格 | 上游内容 | 生成确认 |
 | 某张图片的视觉问题 | 所有已锁定上游选择 | 该图的变更、输出规格与生成确认 |
 
-不删除已生成资产；重生成用新版本文件，除非用户明确要求替换。
+不删除已生成资产；重生成和明确的替换请求都使用新版本文件，不覆盖旧文件。

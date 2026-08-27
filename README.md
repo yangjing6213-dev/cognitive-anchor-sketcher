@@ -14,6 +14,7 @@
 - 支持 `minimal-line` 与 `emotion-doodle` 两种画风预设。
 - 支持小黑、拓拓、星比、拓拓与星比，以及经过授权的项目级自定义 IP。
 - 生成前执行确认式 QA：文章方向、画风、IP、授权、shot list、输出规格和生成模式逐项确认。
+- 生图只使用已通过 ChatGPT 登录的 Codex CLI 及其内置图片生成工具；不使用 API 密钥、Images API 或其他提供商回退。
 - 生成后按 QA 清单检查留白、角色参与、中文批注、白底和非 PPT 感，并等待用户验收。
 
 ## 输出边界
@@ -22,7 +23,7 @@
 
 - 16:9 横版正文配图方案和 shot list。
 - 每张图的段落位置、核心意思、结构类型、角色动作、元素和短批注建议。
-- 按用户确认的规格生成单张 PNG；工作区内的输出保存到 `assets/<article-slug>-illustrations/`。
+- 按用户确认的规格生成单张 PNG；保留工具返回的原始文件，用户接受后再无覆盖地复制到 `assets/<article-slug>-illustrations/`。
 
 不负责：
 
@@ -51,6 +52,16 @@ cp -R ./cognitive-anchor-sketcher "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```text
 Use $cognitive-anchor-sketcher 为这篇中文文章设计正文配图。
 ```
+
+## 生图环境
+
+生图后端唯一允许使用已通过 ChatGPT 登录的 Codex CLI，以及当前 Codex 会话实际暴露的内置图片生成工具。不需要也不得提供、读取或使用 `OPENAI_API_KEY`、`CODEX_API_KEY`；本 Skill 不调用 Images API、`image_gen.py`、SDK，也不回退到其他图片提供商。非 CLI 宿主按执行契约桥接时，还需要本机官方 Codex CLI 及其运行时依赖（PowerShell 或 POSIX 示例会先做来源和版本检查）。
+
+- 当前已经是 Codex CLI 会话且内置图片生成工具可用时，直接调用，不再启动 Codex。
+- 明确处于非 CLI 宿主时，完成版本与 ChatGPT 登录状态预检后，最多用一次 `codex exec --ephemeral` 桥接；桥接进程不得再次启动 Codex。
+- CLI、ChatGPT 登录、内置工具、生成结果或工具返回的输出文件任一不可用时，立即停止并报告恢复步骤，不自动重试或回退。
+
+PowerShell、POSIX shell 的安全桥接方式、输出路径与失败处理详见 [`codex-cli-generation.md`](cognitive-anchor-sketcher/references/codex-cli-generation.md)。原始生成目录 `.codex/generated_images/` 只保留在本地，并已加入本仓库忽略规则。
 
 ## 使用示例
 
@@ -111,6 +122,7 @@ IP：拓拓与星比
     │   └── openai.yaml
     └── references/
         ├── composition-patterns.md
+        ├── codex-cli-generation.md
         ├── ip-profiles.md
         ├── prompt-template.md
         ├── qa-checklist.md
@@ -128,6 +140,7 @@ IP：拓拓与星比
 - 示例图不是运行依赖；本次最小发行版不包含示例图片。
 - 自定义 IP 参考图只有在用户明确确认必要权利和保存范围后，才允许建立项目级档案。
 - 项目级自定义 IP 档案属于用户本地内容，默认不纳入开源仓库或发布清单。
+- `.codex/generated_images/` 中的原始生成文件只保留在本地；用户接受的副本也不得覆盖现有资产。
 - 不要把 Token、密钥、Cookie、私有数据或本地报告复制到仓库。
 
 ## 许可证
