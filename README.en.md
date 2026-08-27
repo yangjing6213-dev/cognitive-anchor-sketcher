@@ -1,5 +1,7 @@
 # Cognitive Anchor Sketcher
 
+![Cognitive Anchor Sketcher project cover](docs/assets/project-cover.png)
+
 > Turn one important idea in an article into a hand-drawn body illustration people can actually remember.
 
 [中文说明](README.md)
@@ -167,6 +169,9 @@ Article input
 │       ├── codeql.yml
 │       └── validate-skill.yml
 ├── docs/
+│   ├── assets/
+│   │   ├── author-avatar.png
+│   │   └── project-cover.png
 │   └── examples/
 │       ├── 01-article-input-anchor.png
 │       ├── 02-anchor-to-action.png
@@ -188,7 +193,7 @@ Article input
         └── xiaohei-ip.md
 ```
 
-Install `cognitive-anchor-sketcher/`; `docs/examples/` is public showcase material, not a runtime dependency. Local generated outputs, custom IP profiles, and audit reports stay local under the repository’s ignore rules.
+Install `cognitive-anchor-sketcher/`; `docs/assets/` and `docs/examples/` are public showcase material, not runtime dependencies. Local generated outputs, custom IP profiles, and audit reports stay local under the repository’s ignore rules.
 
 ## 10. Important notes
 
@@ -208,6 +213,8 @@ None.
 ## 12. About the author
 
 ### Enhe
+
+<img src="docs/assets/author-avatar.png" alt="Portrait of Enhe" width="240">
 
 Product designer · One-person-company practitioner · AI Builder
 

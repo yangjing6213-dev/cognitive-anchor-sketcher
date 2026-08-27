@@ -1,5 +1,7 @@
 # Cognitive Anchor Sketcher
 
+![Cognitive Anchor Sketcher 项目封面](docs/assets/project-cover.png)
+
 > 把文章里的一个关键认知，画成一张白底、手绘、能让人记住的正文配图。
 
 [English README](README.en.md)
@@ -167,6 +169,9 @@ IP：拓拓与星比
 │       ├── codeql.yml
 │       └── validate-skill.yml
 ├── docs/
+│   ├── assets/
+│   │   ├── author-avatar.png
+│   │   └── project-cover.png
 │   └── examples/
 │       ├── 01-article-input-anchor.png
 │       ├── 02-anchor-to-action.png
@@ -188,7 +193,7 @@ IP：拓拓与星比
         └── xiaohei-ip.md
 ```
 
-真正需要安装的是 `cognitive-anchor-sketcher/`。`docs/examples/` 只是公开示例，不参与运行；本地生成目录、自定义 IP 档案和审计报告按 `.gitignore` 规则留在本地。
+真正需要安装的是 `cognitive-anchor-sketcher/`。`docs/assets/` 和 `docs/examples/` 只是公开展示素材，不参与运行；本地生成目录、自定义 IP 档案和审计报告按 `.gitignore` 规则留在本地。
 
 ## 十、注意事项
 
@@ -208,6 +213,8 @@ IP：拓拓与星比
 ## 十二、关于作者
 
 ### Enhe（恩禾）
+
+<img src="docs/assets/author-avatar.png" alt="Enhe（恩禾）头像" width="240">
 
 产品设计师 · 一人公司实践者 · AI Builder
 
